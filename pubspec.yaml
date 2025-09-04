@@ -42,6 +42,7 @@ dependencies:
   google_fonts: ^6.2.1
   shared_preferences: ^2.5.3
   gap: ^3.0.1
+  lucide_icons_flutter: ^3.0.7
 
 dev_dependencies:
   flutter_test:
