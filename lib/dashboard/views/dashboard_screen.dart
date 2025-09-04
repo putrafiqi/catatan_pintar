@@ -1,4 +1,7 @@
+import 'package:catatan_pintar/data/data.dart';
+import 'package:catatan_pintar/folder/folder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -7,7 +10,22 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DashboardView();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create:
+              (context) =>
+                  FilterFolderBloc()..add(FilterFolderPressed('Semua')),
+        ),
+        BlocProvider(
+          create: (context) {
+            final folderRepository = context.read<FolderRepository>();
+            return FolderBloc(folderRepository)..add(FolderRequested());
+          },
+        ),
+      ],
+      child: const DashboardView(),
+    );
   }
 }
 
@@ -34,44 +52,7 @@ class _DashboardViewState extends State<DashboardView> {
         children: [
           const SearchNotesField(),
           const Gap(16),
-          SizedBox(
-            height: 40,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const Gap(4),
-                scrollDirection: Axis.horizontal,
-                itemCount: 10 + 2,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return ChoiceChip(
-                      label: const Text('Semua'),
-                      selected: selectedIndex == index ? true : false,
-                      onSelected:
-                          (value) => setState(() {
-                            selectedIndex = index;
-                          }),
-                    );
-                  }
-                  if (index == 11) {
-                    return IconButton(
-                      onPressed: () {},
-                      icon: const Icon(LucideIcons.folderPlus),
-                    );
-                  }
-                  return ChoiceChip(
-                    label: Text('$index'),
-                    selected: selectedIndex == index ? true : false,
-                    onSelected:
-                        (value) => setState(() {
-                          selectedIndex = index;
-                        }),
-                  );
-                },
-              ),
-            ),
-          ),
-
+          FilterFolder(),
           const Gap(16),
 
           //TODO: Add Note List
