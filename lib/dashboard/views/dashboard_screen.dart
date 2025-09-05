@@ -1,5 +1,6 @@
 import 'package:catatan_pintar/data/data.dart';
 import 'package:catatan_pintar/folder/folder.dart';
+import 'package:catatan_pintar/note/note.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -21,6 +22,12 @@ class DashboardScreen extends StatelessWidget {
           create: (context) {
             final folderRepository = context.read<FolderRepository>();
             return FolderBloc(folderRepository)..add(FolderRequested());
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            final noteRepository = context.read<NoteRepository>();
+            return NoteBloc(noteRepository)..add(NoteRequested());
           },
         ),
       ],
@@ -56,6 +63,7 @@ class _DashboardViewState extends State<DashboardView> {
           const Gap(16),
 
           //TODO: Add Note List
+          const ListNote(),
           const Gap(16),
         ],
       ),

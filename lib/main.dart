@@ -12,15 +12,23 @@ void main() async {
   final pref = await SharedPreferences.getInstance();
   await Hive.initFlutter();
   Hive.registerAdapter<FolderModel>(FolderModelAdapter());
+  Hive.registerAdapter<NoteModel>(NoteModelAdapter());
   final folderBox = await Hive.openBox<FolderModel>('folders');
-  runApp(App(pref: pref, folderBox: folderBox));
+  final noteBox = await Hive.openBox<NoteModel>('notes');
+  runApp(App(pref: pref, folderBox: folderBox, noteBox: noteBox));
 }
 
 class App extends StatelessWidget {
-  const App({super.key, required this.pref, required this.folderBox});
+  const App({
+    super.key,
+    required this.pref,
+    required this.folderBox,
+    required this.noteBox,
+  });
 
   final SharedPreferences pref;
   final Box<FolderModel> folderBox;
+  final Box<NoteModel> noteBox;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +45,10 @@ class App extends StatelessWidget {
             create:
                 (context) =>
                     FolderRepository(FolderLocalDataSourceImpl(folderBox)),
+          ),
+          RepositoryProvider(
+            create:
+                (context) => NoteRepository(NoteLocalDataSourceImpl(noteBox)),
           ),
         ],
         child: BlocProvider(
