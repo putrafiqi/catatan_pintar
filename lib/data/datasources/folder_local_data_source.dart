@@ -5,6 +5,7 @@ abstract interface class FolderLocalDataSource {
   Future<List<FolderModel>> getAllFolder();
   Future<void> addFolder({required String name});
   Future<void> deleteFolder({required String id});
+  Future<void> updateFolder({required String id, required String newName});
 }
 
 class FolderLocalDataSourceImpl implements FolderLocalDataSource {
@@ -26,5 +27,17 @@ class FolderLocalDataSourceImpl implements FolderLocalDataSource {
   @override
   Future<List<FolderModel>> getAllFolder() async {
     return _folderBox.values.toList();
+  }
+
+  @override
+  Future<void> updateFolder({
+    required String id,
+    required String newName,
+  }) async {
+    final foldel = _folderBox.get(id)?.copyWith(name: newName);
+
+    if (foldel != null) {
+      _folderBox.put(id, foldel);
+    }
   }
 }

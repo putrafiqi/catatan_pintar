@@ -17,4 +17,11 @@ class FolderRepository {
   Future<List<FolderModel>> getAllFolder() async {
     return _localDataSource.getAllFolder();
   }
+
+  Future<void> updateFolder({
+    required String id,
+    required String newName,
+  }) async {
+    await _localDataSource.updateFolder(id: id, newName: newName);
+  }
 }

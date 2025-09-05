@@ -58,5 +58,22 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
         );
       }
     });
+    on<UpdateFolderPressed>((event, emit) async {
+      emit(state.copyWith(status: FolderStateStatus.loading));
+      try {
+        _folderRepository.updateFolder(id: event.id, newName: event.newName);
+        final folders = await _folderRepository.getAllFolder();
+        emit(
+          state.copyWith(folders: folders, status: FolderStateStatus.loaded),
+        );
+      } catch (_) {
+        emit(
+          state.copyWith(
+            status: FolderStateStatus.failure,
+            errorMessage: 'Terjadi Kesalahan',
+          ),
+        );
+      }
+    });
   }
 }

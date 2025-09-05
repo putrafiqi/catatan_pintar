@@ -26,3 +26,13 @@ final class DeleteFolderPressed extends FolderEvent {
   @override
   List<Object> get props => [id];
 }
+
+final class UpdateFolderPressed extends FolderEvent {
+  final String id;
+  final String newName;
+
+  const UpdateFolderPressed(this.id, this.newName);
+
+  @override
+  List<Object> get props => [id, newName];
+}

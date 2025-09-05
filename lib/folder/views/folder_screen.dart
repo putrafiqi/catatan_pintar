@@ -17,7 +17,7 @@ class _FolderScreenState extends State<FolderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Folders')),
+      appBar: AppBar(title: const Text('Folder'), centerTitle: true),
       body: BlocBuilder<FolderBloc, FolderState>(
         builder: (context, state) {
           if (state.status == FolderStateStatus.loading) {
@@ -33,13 +33,70 @@ class _FolderScreenState extends State<FolderScreen> {
               return ListTile(
                 key: ValueKey(folder.id),
                 title: Text(folder.name),
-                trailing: IconButton(
-                  onPressed: () {
-                    context.read<FolderBloc>().add(
-                      DeleteFolderPressed(folder.id),
-                    );
-                  },
-                  icon: const Icon(LucideIcons.trash, size: 20),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        context.read<FolderBloc>().add(
+                          DeleteFolderPressed(folder.id),
+                        );
+                      },
+                      icon: const Icon(LucideIcons.trash, size: 20),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder:
+                              (_) => BlocProvider.value(
+                                value: context.read<FolderBloc>(),
+                                child: AlertDialog(
+                                  title: const Text('Nama Baru Folder'),
+
+                                  content: Form(
+                                    key: formKey,
+                                    child: TextFormField(
+                                      controller:
+                                          nameController..text = folder.name,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Nama folder tidak boleh kosong';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Batal'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        if (formKey.currentState!.validate()) {
+                                          context.read<FolderBloc>().add(
+                                            UpdateFolderPressed(
+                                              folder.id,
+                                              nameController.text,
+                                            ),
+                                          );
+                                          nameController.clear();
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                      child: const Text('Simpan'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        );
+                      },
+                      icon: const Icon(LucideIcons.pen, size: 20),
+                    ),
+                  ],
                 ),
               );
             },

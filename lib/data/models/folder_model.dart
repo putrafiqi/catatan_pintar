@@ -15,6 +15,9 @@ class FolderModel extends Equatable {
     : assert(id == null || id.isNotEmpty, 'id must be null or not empty'),
       id = id ?? Uuid().v4();
 
+  FolderModel copyWith({String? id, String? name}) =>
+      FolderModel(id: id ?? this.id, name: name ?? this.name);
+
   @override
   List<Object> get props => [id, name];
 }
